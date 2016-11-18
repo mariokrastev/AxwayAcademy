@@ -6,7 +6,7 @@ package com.axway.academy.addressbook.api;
 import java.io.Serializable;
 
 /**
- * Public Address Book Entry interface.
+ * Public Address Book Global Source interface.
  */
 public interface AddressBookEntry extends Serializable {
 
@@ -45,13 +45,43 @@ public interface AddressBookEntry extends Serializable {
      * @param isEnabled - <b>true</b> for enabling, <b>false</b> for disabling.
      */
     void setEnabled(Boolean isEnabled);
+    
+    /**
+     * Gets the first name of this AB User Entry.
+     *
+     * @return the first name of this AB User Entry or {@code null} if none is set.
+     */
+    String getFirstname();
 
+    /**
+     * Sets the first name of this AB Entry.
+     *
+     * @param firstname The first name of AB User Entry
+     */
+    void setFirstname(String firstname);
+
+    /**
+     * Gets the Surname of this AB User Entry.
+     *
+     * @return The surname name of this AB User Entry or {@code null} if none is set.
+     */
+    String getSurname();
+
+    /**
+     * Sets the name of this AB Entry.
+     *
+     * @param surname The surname of AB UserEntry
+     */
+    void setSurname(String surname);
+    
     /**
      * Interface representing the unique identity of a persisted AddressBookEntry.
      *
-     * @see AddressBookUserEntry#getId()
+     * @see AddressBookEntry#getId()
      */
     interface Id extends Serializable {
         /* Interface has no methods defined. */
     }
+
+
 }

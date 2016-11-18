@@ -87,12 +87,12 @@ public class AccountBean implements Account, Cloneable {
      * referenced. Use the Transfer Manager to get/set the AddressBookContact objects.
      */
     @SuppressWarnings("deprecation")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, targetEntity = com.axway.academy.addressbook.beans.AddressBookUserEntryBean.class, mappedBy = "mAccountId")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, targetEntity = com.axway.academy.addressbook.beans.AddressBookEntryBean.class, mappedBy = "mAccountId")
     // @JoinColumn(name = "accountId", nullable = false)
     @org.hibernate.annotations.ForeignKey(name = "FKAddressBookEntry_Account")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "AccountCache")
-    private Set<AddressBookUserEntryBean> addressBookEntries = new HashSet<AddressBookUserEntryBean>();
+    private Set<AddressBookEntryBean> addressBookEntries = new HashSet<AddressBookEntryBean>();
 
     /**
      * DO NOT USE. Default constructor as required by Hibernate.

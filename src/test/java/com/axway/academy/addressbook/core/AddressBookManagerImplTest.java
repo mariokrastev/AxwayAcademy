@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.axway.academy.addressbook.api.AddressBookUserEntry;
+import com.axway.academy.addressbook.api.AddressBookEntry;
 /**
  * @author ttotev
  *
@@ -22,11 +22,11 @@ public class AddressBookManagerImplTest {
     private static Server sHsqlServer;
 
     /** Address Book Global Source. */
-    private static AddressBookUserEntry sAddressBookUserEntry;
+    private static AddressBookEntry sAddressBookUserEntry;
     
     /** Address Book Account Source. */
-    private static AddressBookUserEntry sAddressBookUserEntry1;
-    private static AddressBookUserEntry sAddressBookUserEntry2;
+    private static AddressBookEntry sAddressBookUserEntry1;
+    private static AddressBookEntry sAddressBookUserEntry2;
     
     /**
      * @throws java.lang.Exception if exception occurs

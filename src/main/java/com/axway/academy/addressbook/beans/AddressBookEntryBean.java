@@ -21,7 +21,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.axway.academy.addressbook.api.Account;
 import com.axway.academy.addressbook.api.AddressBookEntry;
-import com.axway.academy.addressbook.api.AddressBookUserEntry;
 /**
  * An entity that is used to define the data bean to process the data layer to communicate with the database. This
  * entity keeps address book user entry specific properties.
@@ -37,7 +36,7 @@ import com.axway.academy.addressbook.api.AddressBookUserEntry;
     })
 @org.hibernate.annotations.SelectBeforeUpdate
 @XmlType(name = "AddressBookUserEntryBean", propOrder = { "email", "firstname", "surname", "enabled"})
-public class AddressBookUserEntryBean implements AddressBookUserEntry, Cloneable {
+public class AddressBookEntryBean implements AddressBookEntry, Cloneable {
 
     /**
      * Serial version UID.
@@ -83,14 +82,14 @@ public class AddressBookUserEntryBean implements AddressBookUserEntry, Cloneable
     /**
      * Default constructor. Required by Hibernate.
      */
-    public AddressBookUserEntryBean() {
+    public AddressBookEntryBean() {
     }
 
     /**
      * AddressBookUserEntryBean constructor.
      * @param name the name of the address book user entry.
      */
-    public AddressBookUserEntryBean(String email, String firstname, String surname) {
+    public AddressBookEntryBean(String email, String firstname, String surname) {
         this();
         setEmail(email);
         setFirstname(firstname);
@@ -101,7 +100,7 @@ public class AddressBookUserEntryBean implements AddressBookUserEntry, Cloneable
      * AddressBookUserEntryBean constructor.
      * @param id the id of the address book user entry.
      */
-    public AddressBookUserEntryBean(Id id) {
+    public AddressBookEntryBean(Id id) {
         mId = id;
         mUniqueId = id.mIdValue;
     }
@@ -119,7 +118,7 @@ public class AddressBookUserEntryBean implements AddressBookUserEntry, Cloneable
             return null;
         }
 
-        mId = new AddressBookUserEntryBean.Id(mUniqueId);
+        mId = new AddressBookEntryBean.Id(mUniqueId);
         return mId;
     }
 
@@ -236,10 +235,10 @@ public class AddressBookUserEntryBean implements AddressBookUserEntry, Cloneable
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof AddressBookUserEntryBean)) {
+        if (!(obj instanceof AddressBookEntryBean)) {
             return false;
         }
-        AddressBookUserEntryBean other = (AddressBookUserEntryBean) obj;
+        AddressBookEntryBean other = (AddressBookEntryBean) obj;
         if (mUniqueId != null) {
             return mUniqueId.equals(other.mUniqueId);
         }
@@ -282,9 +281,9 @@ public class AddressBookUserEntryBean implements AddressBookUserEntry, Cloneable
      * {@inheritDoc}
      */
     @Override
-    public final AddressBookUserEntryBean clone() {
+    public final AddressBookEntryBean clone() {
         try {
-            return (AddressBookUserEntryBean)super.clone();
+            return (AddressBookEntryBean)super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("The class '" + super.getClass() + "' must be cloneable.");
         }
@@ -294,8 +293,8 @@ public class AddressBookUserEntryBean implements AddressBookUserEntry, Cloneable
      * Return a deep copy of this object.
      * @return A deep copy.
      */
-    public AddressBookUserEntryBean copy() {
-        AddressBookUserEntryBean newbean = clone();
+    public AddressBookEntryBean copy() {
+        AddressBookEntryBean newbean = clone();
         return newbean;
     }
 
@@ -305,7 +304,7 @@ public class AddressBookUserEntryBean implements AddressBookUserEntry, Cloneable
      * objects, etc.
      */
     @XmlType(name = "AddressBookUserEntryBeanId")
-    public static class Id implements AddressBookUserEntry.Id {
+    public static class Id implements AddressBookEntry.Id {
         /**
          * A pattern used to validate an untrusted ID.
          */

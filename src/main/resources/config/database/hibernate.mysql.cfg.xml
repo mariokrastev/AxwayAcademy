@@ -21,7 +21,7 @@
         <property name="c3p0.max_statements">50</property>
 
         <mapping class="com.axway.academy.addressbook.beans.AccountBean"/>
-        <mapping class="com.axway.academy.addressbook.beans.AddressBookUserEntryBean"/>
+        <mapping class="com.axway.academy.addressbook.beans.AddressBookEntryBean"/>
 
     </session-factory>
 
