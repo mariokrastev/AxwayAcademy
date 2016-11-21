@@ -5,14 +5,16 @@
 package com.axway.academy.addressbook.api;
 
 import java.io.Serializable;
+import java.util.Set;
+
+import com.axway.academy.addressbook.beans.AddressBookEntryBean;
 
 /**
  * Public Account Interface.
  * 
- * @since ST Server API 4.6
  */
 public interface Account extends Serializable {
-    /** Maximum length, in characters, of the name. */
+    /** Maximum length, in characters, of the loginname. */
     int MAX_NAME_LENGTH = 80;
     /** Maximum length, in characters, of the email address. */
     int MAX_EMAIL_LENGTH = 255;
@@ -20,18 +22,18 @@ public interface Account extends Serializable {
     int MAX_PHONE_LENGTH = 80;
     
     /**
-     * Get the unique name of the account.
+     * Get the unique loginname of the account.
      * 
-     * @return Unique name of this account instance.
+     * @return Unique loginname of this account instance.
      */
-    String getName();
+    String getLoginname();
 
     /**
-     * Set the unique name of the account.
+     * Set the unique loginname of the account.
      * 
-     * @param name unique name of the account.
+     * @param loginname unique name of the account.
      */
-    void setName(String name);
+    void setLoginname(String loginname);
 
     /**
      * Get the email address of the account's contact.
@@ -88,5 +90,19 @@ public interface Account extends Serializable {
     interface Id extends Serializable {
         /* Interface has no methods defined. */
     }
+
+    void setAddressBookEntries(Set<AddressBookEntryBean> addressBookEntries);
+
+    Set<AddressBookEntryBean> getAddressBookEntries();
+
+    String getFullname();
+
+    void setFullname(String fullname);
+
+    void setDisabled(boolean isDisabled);
+
+    void addAddressBookContact(AddressBookEntryBean entry);
+
+    void removeAddressBookContact(AddressBookEntryBean entry);
     
 }

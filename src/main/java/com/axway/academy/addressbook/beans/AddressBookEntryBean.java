@@ -12,6 +12,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -26,26 +27,22 @@ import com.axway.academy.addressbook.api.AddressBookEntry;
  * entity keeps address book user entry specific properties.
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "AddressBookUserEntryCache")
-@Table(name = "AddressBookUserEntryBean", 
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"id", "email"}, 
-                name = "UK_AddrBookUserEntry")},
-        indexes = {
-                @Index(name = "IDXABUserEntry_Email", columnList = "email")
-    })
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "AddressBookEntryCache")
+@Table(name = "AddressBookEntryBean", 
+        uniqueConstraints = { @UniqueConstraint(columnNames = {"id", "email"}, name = "UK_ABEntry")},
+        indexes = { @Index(name = "IDXABEntry_Email", columnList = "email")}
+)
 @org.hibernate.annotations.SelectBeforeUpdate
-@XmlType(name = "AddressBookUserEntryBean", propOrder = { "email", "firstname", "surname", "enabled"})
+@XmlType(name = "AddressBookEntryBean", propOrder = { "email", "firstname", "surname", "enabled"})
 public class AddressBookEntryBean implements AddressBookEntry, Cloneable {
 
-    /**
-     * Serial version UID.
-     */
-    private static final long serialVersionUID = 3419766058941056519L;
+    /** Unique ID used for serialization. */
+    private static final long serialVersionUID = 5891895492439324956L;
 
     /**
      * The unique identifier for this object. Created and managed by the persistence implementation.
      */
+    @XmlAttribute(name = "id", required = false)
     @javax.persistence.Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "com.axway.academy.addressbook.sql.schema.Uuid")
@@ -86,7 +83,7 @@ public class AddressBookEntryBean implements AddressBookEntry, Cloneable {
     }
 
     /**
-     * AddressBookUserEntryBean constructor.
+     * AddressBookEntryBean constructor.
      * @param name the name of the address book user entry.
      */
     public AddressBookEntryBean(String email, String firstname, String surname) {
@@ -97,7 +94,7 @@ public class AddressBookEntryBean implements AddressBookEntry, Cloneable {
     }
     
     /**
-     * AddressBookUserEntryBean constructor.
+     * AddressBookEntryBean constructor.
      * @param id the id of the address book user entry.
      */
     public AddressBookEntryBean(Id id) {
@@ -212,7 +209,17 @@ public class AddressBookEntryBean implements AddressBookEntry, Cloneable {
         mEnabled = status;
     }
 
-    @Override
+    /**
+     * Package private method for setting an id.
+     *
+     * @param id the id to set
+     */
+    void setId(Id id) {
+        mId = id;
+        mUniqueId = mId.toString();
+    }
+
+   @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -272,7 +279,7 @@ public class AddressBookEntryBean implements AddressBookEntry, Cloneable {
 
     @Override
     public String toString() {
-        return "AddressBookUserEntryBean [email=" + mEmail + ", firstname=" + mFirstname + ", surname=" + mSurname  
+        return "AddressBookEntryBean [email=" + mEmail + ", firstname=" + mFirstname + ", surname=" + mSurname  
                 + ", enabled=" + mEnabled
                 + "]";
     }
@@ -303,7 +310,7 @@ public class AddressBookEntryBean implements AddressBookEntry, Cloneable {
      * object is required without the object itself. This id may be used by manager methods to fetch, delete, associate
      * objects, etc.
      */
-    @XmlType(name = "AddressBookUserEntryBeanId")
+    @XmlType(name = "AddressBookEntryBeanId")
     public static class Id implements AddressBookEntry.Id {
         /**
          * A pattern used to validate an untrusted ID.
@@ -385,4 +392,5 @@ public class AddressBookEntryBean implements AddressBookEntry, Cloneable {
         }
     }
 
+    
 }

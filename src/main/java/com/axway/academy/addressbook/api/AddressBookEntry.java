@@ -11,14 +11,6 @@ import java.io.Serializable;
 public interface AddressBookEntry extends Serializable {
 
     /**
-     * Gets the unique identifier for this Address Book Entry.
-     *
-     * @return The identifier which uniquely identifies the persisted Address Book Entry 
-     *          or {@code null} if this is not a persisted Address Book Entry.
-     */
-    Id getId();
-
-    /**
      * Gets the email of this AB Entry.
      *
      * @return The email of this AB Entry.
@@ -74,6 +66,14 @@ public interface AddressBookEntry extends Serializable {
      */
     void setSurname(String surname);
     
+    /**
+     * Gets the unique identifier for this Address Book Entry.
+     *
+     * @return The identifier which uniquely identifies the persisted Address Book Entry 
+     *          or {@code null} if this is not a persisted Address Book Entry.
+     */
+    AddressBookEntry.Id getId();
+
     /**
      * Interface representing the unique identity of a persisted AddressBookEntry.
      *

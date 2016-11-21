@@ -39,23 +39,33 @@ import com.axway.academy.addressbook.utils.AppFrameworkUtils;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "AccountCache")
 
 @Table(name = "Account", indexes = { @Index(name = "IDXAccount_Email", columnList = "email"), }, uniqueConstraints = {
-        @javax.persistence.UniqueConstraint(columnNames = { "name" }, name = "UC_Account_name"), })
+        @javax.persistence.UniqueConstraint(columnNames = { "loginname" }, name = "UC_Account_loginname"), })
 @org.hibernate.annotations.SelectBeforeUpdate
-@XmlType(name = "Account", propOrder = { "name", "fullname", "email", "phone", "enabled" })
+@XmlType(name = "Account", propOrder = { "loginname", "fullname", "email", "phone", "enabled" })
 @NamedQueries({
-        @NamedQuery(name = "findAccountByIdOrName", query = "select a from AccountBean a where a.mUniqueId = :id or a.name = :name"),
+        @NamedQuery(name = "findAccountByIdOrLoginname", query = "select a from AccountBean a where a.mUniqueId = :id or a.loginname = :loginname"),
         @NamedQuery(name = "findAccountById", query = "select a from AccountBean a where a.mUniqueId = :id"),
-        @NamedQuery(name = "findAccountByName", query = "select a from AccountBean a where a.name = :name") })
+        @NamedQuery(name = "findAccountByLoginname", query = "select a from AccountBean a where a.loginname = :loginname") })
 public class AccountBean implements Account, Cloneable {
 
     /** Unique ID used for serialization. */
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 5937117895768043550L;
 
     /**
-     * Unique account name.
+     * The unique identifier for this object. Created and managed by the persistence implementation.
      */
-    @Column(name = "name", nullable = false)
-    private String name = null;
+    @XmlAttribute(name = "id", required = false)
+    @javax.persistence.Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "com.axway.academy.addressbook.sql.schema.Uuid")
+    @Column(name = "id", length = 32)
+    private String mUniqueId = null;
+
+    /**
+     * Unique account Login name.
+     */
+    @Column(name = "loginname", nullable = false)
+    private String loginname = null;
 
     /**
      * The user ID assigned to this account.
@@ -95,7 +105,7 @@ public class AccountBean implements Account, Cloneable {
     private Set<AddressBookEntryBean> addressBookEntries = new HashSet<AddressBookEntryBean>();
 
     /**
-     * DO NOT USE. Default constructor as required by Hibernate.
+     * DO NOT CHANGE. Default constructor as required by Hibernate.
      */
     protected AccountBean() {
         super();
@@ -107,9 +117,9 @@ public class AccountBean implements Account, Cloneable {
      * @param name the unique name of the account.
      * @param email the account email.
      */
-    AccountBean(String name, String email) {
+    public AccountBean(String loginname, String email) {
         this();
-        setName(name);
+        setLoginname(loginname);
         setEmail(email);
     }
 
@@ -121,41 +131,46 @@ public class AccountBean implements Account, Cloneable {
     /**
      * {@inheritDoc}
      */
-    @XmlElement(name = "name", required = true)
-    public String getName() {
+    @XmlElement(name = "loginname", required = true)
+    @Override
+    public String getLoginname() {
 
-        return name;
+        return loginname;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setName(String name) {
+    @Override
+    public void setLoginname(String loginname) {
 
-        this.name = AppFrameworkUtils.verifyField(name, MAX_NAME_LENGTH);
+        this.loginname = AppFrameworkUtils.verifyField(loginname, MAX_NAME_LENGTH);
     }
 
     /**
      * {@inheritDoc}
      */
     @XmlElement(name = "fullname", required = true)
+    @Override
     public String getFullname() {
 
-        return name;
+        return fullname;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setFullname(String fullname) {
 
-        this.name = fullname;
+        this.fullname = fullname;
     }
 
     /**
      * {@inheritDoc}
      */
     @XmlElement(name = "email")
+    @Override
     public String getEmail() {
 
         return email;
@@ -164,6 +179,7 @@ public class AccountBean implements Account, Cloneable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setEmail(String emailAddress) {
 
         if (AppFrameworkUtils.isNullOrEmpty(emailAddress)) {
@@ -183,6 +199,7 @@ public class AccountBean implements Account, Cloneable {
      * {@inheritDoc}
      */
     @XmlElement(name = "phone")
+    @Override
     public String getPhone() {
 
         return phone;
@@ -191,6 +208,7 @@ public class AccountBean implements Account, Cloneable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPhone(String phoneNumber) {
 
         if (AppFrameworkUtils.isNullOrEmpty(phoneNumber)) {
@@ -203,6 +221,7 @@ public class AccountBean implements Account, Cloneable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDisabled() {
 
         return disabled;
@@ -213,19 +232,10 @@ public class AccountBean implements Account, Cloneable {
      *
      * @param isDisabled the new disabled
      */
+    @Override
     public void setDisabled(boolean isDisabled) {
         this.disabled = isDisabled;
     }
-
-    /**
-     * The unique identifer for this object. Created and managed by the persistence implementation.
-     */
-    @XmlAttribute(name = "id", required = false)
-    @javax.persistence.Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "com.axway.academy.addressbook.sql.schema.Uuid")
-    @Column(name = "id", length = 32)
-    private String mUniqueId = null;
 
     /**
      * ID object constructed using mUniqueId member.
@@ -235,6 +245,7 @@ public class AccountBean implements Account, Cloneable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Account.Id getId() {
 
         if (mId != null) {
@@ -246,6 +257,37 @@ public class AccountBean implements Account, Cloneable {
 
         mId = new AccountBean.Id(mUniqueId);
         return mId;
+    }
+
+    /**
+     * Add mapping to AddressBookContactBean.
+     *
+     * @param contact AddressBookContactBean
+     */
+    @Override
+    public void addAddressBookContact(AddressBookEntryBean entry) {
+        addressBookEntries.add(entry);
+    }
+
+    /**
+     * Remove mapping to AddressBookContactBean.
+     *
+     * @param contact AddressBookContactBean
+     */
+    @Override
+    public void removeAddressBookContact(AddressBookEntryBean entry) {
+        addressBookEntries.remove(entry);
+    }
+
+
+    @Override
+    public Set<AddressBookEntryBean> getAddressBookEntries() {
+        return addressBookEntries;
+    }
+
+    @Override
+    public void setAddressBookEntries(Set<AddressBookEntryBean> addressBookEntries) {
+        this.addressBookEntries = addressBookEntries;
     }
 
     /**
@@ -400,7 +442,7 @@ public class AccountBean implements Account, Cloneable {
     public String toString() {
         StringBuilder accInfo = new StringBuilder();
 
-        accInfo.append("Account name: " + this.getName());
+        accInfo.append("Account name: " + this.getLoginname());
         accInfo.append(" AccountID: " + this.getId());
         accInfo.append(" Full name: " + this.getFullname());
         accInfo.append(" Email: " + this.getEmail());

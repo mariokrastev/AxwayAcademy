@@ -3,7 +3,6 @@ package com.axway.academy.addressbook.sql.schema;
 import java.sql.Types;
 
 import org.hibernate.dialect.SQLServer2012Dialect;
-import org.hibernate.internal.util.StringHelper;
 
 /**
  * Extends the standard hibernate dialect for Microsoft SQL Server to support Unicode data.
