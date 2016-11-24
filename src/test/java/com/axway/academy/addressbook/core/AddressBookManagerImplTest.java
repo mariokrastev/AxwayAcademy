@@ -4,7 +4,6 @@
 package com.axway.academy.addressbook.core;
 
 import org.apache.log4j.BasicConfigurator;
-import org.hibernate.HibernateException;
 import org.hsqldb.Server;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,7 +20,6 @@ import com.axway.academy.addressbook.api.exceptions.DuplicateAccountException;
 import com.axway.academy.addressbook.api.exceptions.NoSuchAccountException;
 import com.axway.academy.addressbook.api.exceptions.PasswordPolicyException;
 import com.axway.academy.addressbook.beans.AccountBean;
-import com.axway.academy.addressbook.sql.SessionManagerFactory;
 /**
  * @author ttotev
  *
@@ -87,7 +85,8 @@ public class AddressBookManagerImplTest {
         
     }
 
-    private void createAccount() {
+    @Test
+    public void createAccount() {
         Account retrievedAccount = null;
         Account account = new AccountBean("stavri1999", "stavri1999@gmail.com");
         account.setFullname("Bai Stavri");
@@ -107,9 +106,11 @@ public class AddressBookManagerImplTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        Assert.assertEquals(account.getLoginname(), retrievedAccount.getLoginname());    }
+        Assert.assertEquals(account.getLoginname(), retrievedAccount.getLoginname());    
+    }
 
-    private void createAddressBookEntries() {
+    @Test
+    public void createAddressBookEntries() {
         // TODO Auto-generated method stub
         
     }

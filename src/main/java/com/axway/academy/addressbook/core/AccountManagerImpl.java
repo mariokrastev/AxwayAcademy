@@ -271,16 +271,16 @@ public class AccountManagerImpl implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public Account getAccountByAccountName(String name) throws NoSuchAccountException {
+    public Account getAccountByAccountName(String loginname) throws NoSuchAccountException {
 
         Session session = mSessionFactoryManager.getSessionFactory().openSession();
         try {
-            AccountCriterionImpl criterion = (AccountCriterionImpl) getAccountCriterion().named(name);
+            AccountCriterionImpl criterion = (AccountCriterionImpl) getAccountCriterion().named(loginname);
 
             Criteria criteria = criterion.getCriteria(session);
             Account account = (Account) criteria.uniqueResult();
             if (account == null) {
-                throw new NoSuchAccountException(name);
+                throw new NoSuchAccountException(loginname);
             }
             return account;
 
