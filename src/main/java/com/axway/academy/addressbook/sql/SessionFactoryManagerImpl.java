@@ -12,7 +12,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.junit.Assert;
 
 /**
  * Provides an implementation of methods to manage a hibernate SessionFactory object.
@@ -40,7 +39,6 @@ class SessionFactoryManagerImpl implements SessionFactoryManager {
             mSessionFactory = new Configuration().configure(cfgFile ).buildSessionFactory();
         } catch (HibernateException e) {
             System.err.println("Failed to create sessionFactory object." + e);
-            Assert.fail(e.getMessage());
         } catch (Exception ex) {
             System.err.println("Failed to create sessionFactory object." + ex);
             throw new ExceptionInInitializerError(ex); 
