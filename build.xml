@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="JavaAcademy - Sample"
+         basedir="."
+         default="all"
+         xmlns:ivy="antlib:org.apache.ivy.ant"
+         xmlns:ant-contrib="antlib:net.sf.antcontrib">
+		 
+    <property name="src.dir"        value="${basedir}/src/main/java" />
+    <property name="config.dir"     value="${basedir}/src/main/resources/config" />
+    <property name="lib.dir"        value="${basedir}/target/lib" />
+    <property name="default.dir"    value="${lib.dir}/default" />
+    <property name="ext.dir"        value="${lib.dir}/ext" />
+    <property name="test.dir"       value="${lib.dir}/test" />
+    <property name="schema.dir"     value="${lib.dir}/schema" />
+    <property name="classes.dir"    value="${basedir}/target/classes" />
+    <property name="database.dir"   value="${basedir}/target/database" />
+    <property name="jar.file"       value="${basedir}/target/build/beans.jar" />
+
+    <property name="hibernate.mysql.cfg.xml" value="hibernate.mysql.cfg.xml" />
+    <property name="hibernate.mssql.cfg.xml" value="hibernate.mssql.cfg.xml" />
+    <property name="hibernate.oracle.cfg.xml" value="hibernate.oracle.cfg.xml" />
+    <property name="mysql.schema.file" value="addressbook-mysql-schema.sql" />
+    <property name="mssql.schema.file" value="addressbook-mssql-schema.sql" />
+    <property name="oracle.schema.file" value="addressbook-oracle-schema.sql" />
+    <property name="oracle.schema.data.file" value="oracle.schema.data.sql"/>
+    
+    <path id="lib.path.id">
+        <fileset dir="${default.dir}">
+            <include name="*.jar" />
+        </fileset>
+    </path>      
+    <path id="hibernate.lib.path.id">
+        <fileset dir="${default.dir}">
+            <include name="*.jar" />
+        </fileset>
+    	<fileset dir="${ext.dir}">
+    		<include name="*.jar" />
+    	</fileset>
+    </path>
+
+	<fileset id="mysql.schema.files" dir="${database.dir}">
+        <include name="${mysql.schema.file}" />
+    </fileset>
+
+    <target name="resolve" description="Move dependencies from m2 local repo to target folder." />
+
+    <target name="move-needed-files">
+        <mkdir dir="${schema.dir}" />
+        <move todir="${schema.dir}">
+            <fileset dir="${default.dir}" includes="**/nanocontainer-*.jar" />
+            <fileset dir="${default.dir}" includes="**/dom4j*.jar" />
+            <fileset dir="${default.dir}" includes="**/jaxen*.jar" />
+            <fileset dir="${default.dir}" includes="**/jtidy*.jar" />
+            <fileset dir="${default.dir}" includes="**/picocontainer*.jar" />
+            <fileset dir="${default.dir}" includes="**/qdox*.jar" />
+            <fileset dir="${default.dir}" includes="**/velocity*.jar" />
+        </move>
+
+        <mkdir dir="${ext.dir}" />
+        <move todir="${ext.dir}">
+            <fileset dir="${default.dir}" includes="**/commons-logging-*.jar" />
+            <fileset dir="${default.dir}" includes="**/geronimo-jta_1.1_spec-*.jar" />
+            <fileset dir="${default.dir}" includes="**/hibernate-commons-annotations-*.jar" />
+            <fileset dir="${default.dir}" includes="**/jboss-logging-*.jar" />
+            <fileset dir="${default.dir}" includes="**/slf4j-api-*.jar" />
+        </move>
+
+        <mkdir dir="${test.dir}" />
+        <move todir="${test.dir}">
+            <fileset dir="${default.dir}" includes="**/emma*.jar" />
+            <fileset dir="${default.dir}" includes="**/hamcrest-core*.jar" />
+            <fileset dir="${default.dir}" includes="**/junit*.jar" />
+        </move>
+
+    </target>
+
+    <target name="export-schema">
+        <path id="schema.path.id">
+            <path refid="lib.path.id" />
+        	<path refid="hibernate.lib.path.id" />
+            <path location="${classes.dir}" />
+            <fileset dir="${schema.dir}" />
+        </path>
+
+        <mkdir dir="${database.dir}" />
+
+        <!-- Define the hibernatetool task -->
+        <taskdef name="hibernatetool"
+                 classname="org.hibernate.tool.ant.HibernateToolTask"
+                 classpathref="schema.path.id" 
+                 reverseloader="true"/>
+        <sequential>
+            <hibernatetool destdir="${database.dir}">
+                <annotationconfiguration configurationfile="${config.dir}/database/${hibernate.mssql.cfg.xml}" />
+                <hbm2ddl export="false"
+                         drop="false"
+                         create="true"
+                         update="false"
+                         outputfilename="${mssql.schema.file}" />
+            </hibernatetool>
+            <!-- Remove unique constraint for (protocol, anchor) pair. In mssql server, an unique constraint is enforced using an unique index on the columns. 
+              But the index key size has a limitation of 900 bytes. Instead an unique non-clustered index will be created for protocol column with included anchor. -->
+            <replaceregexp file="${database.dir}/${mssql.schema.file}" match="unique \(protocol, anchor\)," replace="" flags="mg"/>
+            <hibernatetool destdir="${database.dir}">
+                <annotationconfiguration configurationfile="${config.dir}/database/${hibernate.mysql.cfg.xml}" />
+                <hbm2ddl export="false"
+                         drop="false"
+                         create="true"
+                         update="false"
+                         outputfilename="${mysql.schema.file}" />
+            </hibernatetool>
+            <hibernatetool destdir="${database.dir}">
+                <annotationconfiguration configurationfile="${config.dir}/database/${hibernate.oracle.cfg.xml}" />
+                <hbm2ddl export="false"
+                         drop="false"
+                         create="true"
+                         update="false"
+                         outputfilename="${oracle.schema.data.file}" />
+            </hibernatetool>
+
+        </sequential>
+    </target>
+
+    <!-- ================================= 
+          target: compile              
+         ================================= -->
+	
+    <macrodef name="compile" description="Compiles Java source code">
+        <attribute name="src.dir" description="Source directory" />
+        <attribute name="dest.dir" description="Destination directory" />
+        <attribute name="classpath.refid" description="Classpath reference" />
+        <attribute name="debug" default="yes" description="Compile with debug info" />
+        <attribute name="target" default="1.7" description="Compile with a set target version" />
+        <attribute name="source" default="@{target}" description="" />
+        <sequential>
+            <mkdir dir="@{dest.dir}" />
+            <javac destdir="@{dest.dir}" classpathref="@{classpath.refid}" debug="@{debug}" target="@{target}" source="@{source}">
+                <compilerarg value="-Xlint" />
+                <compilerarg value="-Xmaxwarns"/>
+                <compilerarg value="${warn.watermark}"/>
+                <compilerarg value="-Xlint:-path" />
+                <src path="@{src.dir}" />
+            </javac>
+        </sequential>
+    </macrodef>
+
+    <target name="compile" depends="resolve" description="compile source code in the project">
+        <property name="java.target" value="1.7" />
+        <compile src.dir="${src.dir}"
+                 dest.dir="${classes.dir}"
+                 classpath.refid="lib.path.id"
+                 debug="true"
+                 target="${java.target}" />
+    </target>
+
+    <!-- ================================= 
+          target: jar              
+         ================================= -->
+    <target name="jar" depends="compile" description="--> make a jar file for this project">
+        <antcall target="jar-with-metainf" />
+        <antcall target="jar-without-metainf" />
+    </target>
+
+    <target name="jar-with-metainf" 
+            if="metainf.file"
+            description="include metainf file while creating the project's jar file">
+        <make-jar jar.file="${jar.file}"
+                  classes.dir="${classes.dir}"
+                  user.name="${user.name}"
+                  revision="${ivy.revision}"
+                  excludes="${jar.exludes}">
+            <metainf file="${metainf.file}" /> 
+        </make-jar>
+    </target>
+
+    <target name="jar-without-metainf" 
+            unless="metainf.file"
+            description="creating the project's jar file, without including any extra files">
+        <make-jar jar.file="${jar.file}"
+                  classes.dir="${classes.dir}"
+                  user.name="${user.name}"
+                  revision="${ivy.revision}"
+                  excludes="${jar.exludes}" />
+    </target>
+
+    <macrodef name="make-jar" description="Makes a jar file from a directory">
+        <attribute name="jar.file" description="JAR file to create" />
+        <attribute name="classes.dir" description="directory to put in the JAR" />
+        <attribute name="user.name"
+                   description="Username assign as the build person (in METAFILE)"
+                   default="${user.name}" />
+        <attribute name="revision" description="Build revision (METAFILE)" default="${ivy.revision}" />
+        <attribute name="includes" description="Files to be included in the jar" default="**/*" />
+        <attribute name="excludes" description="Files to be included in the jar" default="" />
+        <element name="metainf" optional="true" implicit="true"/>
+
+        <sequential>
+            <dirname file="@{jar.file}" property="jar.file.dir" />
+            <mkdir dir="${jar.file.dir}" />
+            <get-subersion-revision property="subversion.revision" />
+
+            <jar destfile="@{jar.file}">
+                <fileset dir="@{classes.dir}" includes="@{includes}" excludes="@{excludes}" />
+                <manifest>
+                    <attribute name="Built-By" value="@{user.name}" />
+                    <attribute name="Build-Version" value="@{revision}" />
+                    <attribute name="Subversion-Revision" value="1" />
+                </manifest>
+                <metainf />
+            </jar>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="get-subersion-revision"
+              description="Retrieves the subversion revision either from the Hudson environment variable or 
+                           the project basedir.">
+        <attribute name="property" description="Property to set with the correct value" />
+
+        <sequential>
+            <property environment="env" />
+            <condition property="@{property}" value="${env.SVN_REVISION}">
+                <isset property="env.SVN_REVISION" />
+            </condition>
+            <exec executable="bash" outputproperty="svn.info.revision">
+                <arg value="-c" />
+                <arg value="(svn info '${basedir}' || echo 'Revision: N/A') 2>/dev/null | grep Revision | awk '{ print $2 }'" />
+            </exec>
+            <property name="@{property}" value="${svn.info.revision}" />
+        </sequential>
+    </macrodef>
+
+
+	<target name="all"
+            depends="move-needed-files,compile,jar,export-schema"
+            description="compile project" />
+
+</project>

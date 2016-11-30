@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<System>
+		<Database databaseType="mysql" jdbcDriver="org.hsqldb.jdbcDriver" jdbcUrl="jdbc:hsqldb:mem:testdb;shutdown=true"
+			password="" user="sa">
+			<Options hibernate.hbm2ddl.auto="create"
+				hibernate.c3p0.max_size="100" hibernate.c3p0.min_size="2"
+				hibernate.c3p0.timeout="1800" hibernate.cache.use_minimal_puts="false"
+				hibernate.cache.use_query_cache="true" hibernate.dialect="org.hibernate.dialect.HSQLDialect"
+				hibernate.show_sql="false" />
+		</Database>
+	</System>
+</Configuration>

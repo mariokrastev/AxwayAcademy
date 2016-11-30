@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <property name="dialect">com.axway.academy.addressbook.sql.schema.Oracle10gDialectAxwayImpl</property>
+        <property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+
+        <mapping class="com.axway.academy.addressbook.beans.AccountBean"/>
+        <mapping class="com.axway.academy.addressbook.beans.AddressBookEntryBean"/>
+
+    </session-factory>
+
+</hibernate-configuration>
