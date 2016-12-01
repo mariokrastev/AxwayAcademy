@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.axway.academy.mario</groupId>
-  <artifactId>JDBCHomework</artifactId>
+  <artifactId>Axway-04-And-06-MavenJDBC</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>JDBCHomework</name>
+  <name>Axway-04-And-06-MavenJDBC</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -29,7 +29,7 @@
     <version>1.0</version>
 
      
- <systemPath>D:\SoftUni\JAVA\HOMEWORK\JDBCHomework\src\lib\HelloWorld.jar</systemPath>
+ <systemPath>D:\SoftUni\JAVA\HOMEWORK\Axway-04-And-06-MavenJDBC\src\lib\HelloWorld.jar</systemPath>
       </dependency>
   </dependencies>
 </project>
