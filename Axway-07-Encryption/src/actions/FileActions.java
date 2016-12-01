@@ -32,12 +32,12 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class FileActions {
-	
+
 	private static final String AES_ALGORITHM = "AES";
 	private static final String RSA_ALGORITHM = "RSA";
 	private static final String RSA_SHA1_PADDING = "RSA/ECB/OAEPWithSHA1AndMGF1Padding";
 	private static final String UTF_8 = "UTF-8";
-	
+
 	FileInputStream input = null;
 
 	private Scanner scan = new Scanner(System.in);
@@ -58,39 +58,40 @@ public class FileActions {
 
 		System.out.println("Enter the name of the file you want to encrypt: ");
 		String fileName = scan.nextLine();
+		File inputFile = null;
 		while (true) {
-			File inputFile = new File(fileName);
+			inputFile = new File(fileName);
 			if (!inputFile.exists()) {
 				System.out.println("There is no file with name " + fileName);
 				System.out.println("Please enter a file name again.");
 				fileName = scan.nextLine();
 			} else {
-
-				try {
-					input = new FileInputStream(inputFile);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-				System.out.println("Enter the name of the file to make it a container for the encrypted content.");
-				String nameOfFile = scan.nextLine();
-				File outputFile = new File(nameOfFile);
-
-				doCrypto(inputFile, outputFile, nameOfFile, Cipher.ENCRYPT_MODE);
-				encryptKey(key);
-				String fileStoring = nameOfFile + "StoreKeyFilePair";
-				storeKeyFilePair(nameOfFile, key, fileStoring);
-				if (input != null) {
-					try {
-						input.close();
-					} catch (IOException e) {
-						System.out.println("Input stream cannot be closed.");
-						e.printStackTrace();
-					}
-				}
-
+				break;
 			}
 		}
-	}
+			try {
+				input = new FileInputStream(inputFile);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			System.out.println("Enter the name of the file to make it a container for the encrypted content.");
+			String nameOfFile = scan.nextLine();
+			File outputFile = new File(nameOfFile);
+
+			doCrypto(inputFile, outputFile, nameOfFile, Cipher.ENCRYPT_MODE);
+			encryptKey(key);
+			String fileStoring = nameOfFile + "StoreKeyFilePair";
+			storeKeyFilePair(nameOfFile, key, fileStoring);
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					System.out.println("Input stream cannot be closed.");
+					e.printStackTrace();
+				}
+			}
+
+		}
 
 	public void fileDecrypt() {
 
@@ -117,6 +118,7 @@ public class FileActions {
 	public void doCrypto(File inputFile, File outputFile, String key, int cipherMode) {
 
 		try {
+			key = padTextToBeMultipleTo16(key);
 			Key secretKey = new SecretKeySpec(key.getBytes(), AES_ALGORITHM);
 			Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
 			cipher.init(cipherMode, secretKey);
@@ -152,7 +154,6 @@ public class FileActions {
 			System.out.println();
 			e.printStackTrace();
 		}
-
 	}
 
 	public byte[] encryptKey(String key, PublicKey encryptionKey) {
@@ -279,7 +280,6 @@ public class FileActions {
 
 	public void storeKeyFilePair(String fileName, String key, String fileStoring) {
 
-		
 		OutputStream output = null;
 		File file = new File(fileName);
 		try {

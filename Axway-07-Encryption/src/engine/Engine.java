@@ -27,14 +27,12 @@ public class Engine {
 			EncryptCommand encrypt = new EncryptCommand(actions);
 			broker.registerCommand(encrypt);
 			broker.execute();
-			run();
 			break;
 
 		case "2":
 			DecryptCommand decrypt = new DecryptCommand(actions);
 			broker.registerCommand(decrypt);
 			broker.execute();
-			run();
 			break;
 
 		case "3":
@@ -43,9 +41,8 @@ public class Engine {
 
 		default:
 			System.out.println("Invalid action, please enter a valid action.");
-			run();
 
 		}
-
+			run();
 	}
 }
