@@ -1,0 +1,13 @@
+Gosho is a good boy. He is coding on Java every free second of his life.
+Gosho have a friend named Ivan. They had to make a game in Axway Academy as a project with
+main character named Stela. Actually they got help by their
+friend - the great Senior Developer - Joreto. They decide to have some rules:
+
+1. Gosho will make the skeleton of the game.
+2. Nobody will fill the empty methods code blocks.
+3. Ivan will make the collisions.
+4. Joreto will make everything else in the game.
+
+The game was really awesome thanks to ideas of Joreto.
+On the defence of the project Andrey understoot that their game is not created by them
+and told them to create a very simple game for 3 hours in the office. They failed. End of story.

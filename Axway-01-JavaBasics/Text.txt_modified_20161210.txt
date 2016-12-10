@@ -1,0 +1,13 @@
+Pesho is a good boy. He is coding on Python every free second of his life.
+Pesho have a friend named Petkan. They had to make a game in Axway Academy as a project with
+main character named Silvia. Actually they got help by their
+friend - the great Junior QA - Stiliyan. They decide to have some rules:
+
+1. Pesho will make the skeleton of the game.
+2. Somebody will fill the empty methods code blocks.
+3. Petkan will make the collisions.
+4. Stiliyan will make everything else in the game.
+
+The game was really awesome thanks to ideas of Stiliyan.
+On the defence of the project Andrew understoot that their game is not created by them
+and told them to create a very simple game for 3 hours in the office. They succeed. End of story.

@@ -1,0 +1,10 @@
+Gosho = Pesho
+Ivan = Petkan
+Stela = Silvia
+Nobody = Somebody
+Joreto = Stiliyan
+Andrey = Andrew
+Senior = Junior
+Developer = QA
+failed = succeed
+Java = Python
