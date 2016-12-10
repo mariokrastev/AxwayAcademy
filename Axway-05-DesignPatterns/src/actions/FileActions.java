@@ -38,7 +38,7 @@ public class FileActions {
 	 */
 
 	private static final String DATE_FORMAT = new SimpleDateFormat("yyyyMMdd").format(new Date());
-	private static final String PROPERTIES_FILE = "Properties.txt";
+	private static final String PROPERTIES_FILE = "WordsPairs.txt";
 
 	/**
 	 * A help method for renaming the new output file.
