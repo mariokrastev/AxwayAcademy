@@ -42,7 +42,7 @@ public class EmailValidatorTests {
 	// test with null
 	@Test
 	public void email_nullValue_shouldNotPass() {
-		boolean validation = this.validator.isValid("null");
+		boolean validation = this.validator.isValid(null);
 		Assert.assertFalse(validation);
 	}
 
